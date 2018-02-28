@@ -89,8 +89,9 @@ int main(int argc, char *argv[]) {
 
   Paths* arrayDirs;
   Paths* copiaArrayDirs; // Copia de la direccion en donde comienza la lista de productos
-  char* path[200];
   int lines;   // lines contiene el numero de lineas en el archivo
+  char* cod1 = "find ";
+  char* cod2 = " -type f >> rutas.txt ";
 
   lines = countlines(argv[1]);
   //printf("LINES: %d\n",lines);
@@ -101,9 +102,17 @@ int main(int argc, char *argv[]) {
 
   //printf("PATH i: %s\n",copiaArrayDirs->name);
 
+  // Creamos un archivo nuevo en el cual se van a encontrar las rutas finales
+  system("touch rutas.txt");
+  char path[500];
+  // Procedemos a buscar por cada directorio hoja sus archivos
   for (int i = 0; i < lines; i++) {
-    printf("PATH i: %s\n", arrayDirs->name);
-    //strcpy(*path,arrayDirs->name);
+    //printf("%s \n",arrayDirs->name);
+    memset(path,0,500);
+    strcat(path,cod1);
+    strcat(path,arrayDirs->name);
+    strcat(path,cod2);
+    printf(" %s \n",path);
     arrayDirs++;
   }
 

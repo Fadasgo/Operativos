@@ -1,67 +1,175 @@
-
-
-#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#include <ctype.h>
 #include <dirent.h>
 #include <sys/types.h>
+// Lectura Proyecto I
 
-/* Estructuras */
+// Estructuras
 
-typedef struct Pila{
+typedef struct ruta{
+   char name[200]; // contiene la direccion de un directorio hoja
+}Paths;
 
-    int N;
-    int max_size;
-    char **S;
+ // Prototipos de funciones
 
-}Pila;
+int countlines(char *filename);
 
-/* Prototipos de funciones */
-
-int listar_directorios(Pila* st, char* name, int *files);
-
-void inicializar_p(Pila *st);
-
-int elementos_p(Pila *st);
-
-int vacia_p(Pila *st);
-
-char* tope(Pila *st);
-
-void pop(Pila *st);
-
-void push(Pila *st, char *name);
-
-void destruir_p(Pila *st);
+Paths* readd(int numLines, char *filename);
 
 int procesaEntrada(int argc, char **argv, char **dir, int *altura, int *verArchivos);
 
-int main(int argc, char **argv){
+int main(int argc, char **argv) {
 
-	/* Variables */
+  /* Variables */
 	int altura = 0;
 	int verArchivos = 0;
 	char *dir = NULL;
 	int opcion = procesaEntrada(argc, argv, &dir, &altura, &verArchivos);
 
-	if(opcion < 0)                                                
-    {                                                
-        printf("¡ERROR!\nEl programa se cerrara.\n");
+	if(opcion < 0){
+    printf("¡ERROR!\nEl programa se cerrara.\n");
+    return 0;
+  }
+
+  // primero buscamos los directorios hojas para luego buscar las rutas de los archivos
+  #define SIZEP 100 // tamaño del arreglo que va a contener la direccion inicial
+  long size;
+  char *buf;
+  char *ptr;
+  char startPath[SIZEP];
+  char* c1 = "find ";
+  char* c2 = " -type d -links 2  | tee archivo.txt";
+
+  // Buscamos la direccion del path donde estamos situados para despues poder buscar el archivo.txt creado mas adelante
+  size = pathconf(".", _PC_PATH_MAX);
+  if ((buf = (char *)malloc((size_t)size)) != NULL);
+  ptr = getcwd(buf, (size_t)size); // poner condicional para saber si la ruta que vamos a usar es la de donde estamos parados o la dada por el flag
+
+  //printf("PATH %s \n", ptr); // print para verificar el path
+
+  // caso si el usuario no coloca una ruta en especifica
+  if (dir == "."){
+    //printf("NO PASASTE LA RUTA \n");
+    memset(startPath,0,SIZEP);
+    strcat(startPath,c1);
+    strcat(startPath,ptr);
+    strcat(startPath,c2);
+    system(startPath);
+    system("clear");
+  }
+  else if (dir != ".") {
+    //printf("ASI ES COMPARTIENDO LA RUTA \n");
+    memset(startPath,0,SIZEP);
+    strcat(startPath,c1);
+    strcat(startPath,dir);
+    strcat(startPath,c2);
+    system(startPath);
+    //printf("PATH %s\n",dir );
+    system("clear");
+  }
+
+
+  // ahora procedemos a leer el archivo creado para buscar los archivos de los directorios hojas
+
+  Paths* arrayDirs;
+  Paths* copiaArrayDirs; // Copia de la direccion en donde comienza la lista de productos
+  int lines;   // lines contiene el numero de lineas en el archivo
+  char* cod1 = "find ";
+  char* cod2 = " -type f >> rutas.txt";
+
+  lines = countlines("archivo.txt");
+  //printf("LINES: %d\n",lines);
+  //printf("Lineas \n");
+  // Recibimos la direccion donde comienza el arreglo
+  arrayDirs = readd(lines,"archivo.txt");
+  copiaArrayDirs = arrayDirs; // creamos copia del inicio del arreglo dinamico
+
+  //printf("PATH i: %s\n",copiaArrayDirs->name);
+
+  system("touch rutas.txt"); // Creamos un archivo nuevo en el cual se van a encontrar las rutas finales
+  #define SIZEPATHF 500 // tamaño del arreglo que va a contener la direccion de los archivos contenidos en los directorios hojas
+  char path[SIZEPATHF];
+
+  // Procedemos a buscar por cada directorio hoja sus archivos
+  for (int i = 0; i < lines; i++) {
+    //printf("%s \n",arrayDirs->name);
+    memset(path,0,SIZEPATHF); // reseteamos el arreglo temporal
+    strcat(path,cod1);
+    strcat(path,arrayDirs->name);
+    strcat(path,cod2);
+    //printf(" %s \n",path);
+    system(path);
+    arrayDirs++;
+  }
+  //printf("%s \n", startPath); // print para verificar el path
+
+  printf("RUTA %s\n",dir);
+
+  return 0;
+}
+
+// Funciones
+int countlines(char *filename){
+    FILE *fp;
+    int count = 0;  // contador de lineas
+    char c;  // To store a character read from file
+
+    // Abrimos el archivo
+    fp = fopen(filename, "r");
+
+    // chequea si el archivo existe
+    if (fp == NULL)
+    {
+        printf("Could not open file %s", filename);
         return 0;
     }
 
-    printf("Altura: %d\n", altura);
-    printf("Direccion: %s\n", dir);
-    printf("Ver Archivos: %d\n", verArchivos);
+    // extraemos los caracteres y los guardamos en la variable c
+    for (c = getc(fp); c != EOF; c = getc(fp)){
+        if (c == '\n'){
+            count = count + 1;
+        }
+    }
+    // cerramos el archivo
+    fclose(fp);
 
-    printf("Todo correccto\n");
+    return count;
 }
 
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/*+++++++++++++++++++++++++++++++++++++Procesar la entrada+++++++++++++++++++++++++++++++++++*/
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+Paths* readd(int numLines, char *filename){
+  Paths* arrayP = malloc(numLines * sizeof(Paths));
+  Paths* InicioArray = arrayP;
+  char* line = NULL;
+  //char *line2 = NULL;
+  size_t len = 0;
+  ssize_t readd;
+  char *token;
+  Paths ruta;
+
+  FILE *file = fopen ( filename, "r" );
+
+  if (file == NULL){
+		exit(EXIT_FAILURE);
+  }
+
+	while ((readd = getline(&line, &len, file)) != -1) {
+    char* dirs;
+    token = strtok(line,"\n");
+    //printf("%s \n", token);
+    strcpy(ruta.name,token);
+    *arrayP = ruta;
+    //printf("%s \n", arrayP->name);
+    arrayP++;
+  }
+
+  free(line);
+  fclose(file);
+  return InicioArray;
+}
 
 int procesaEntrada(int argc, char **argv, char **dir, int *altura, int *verArchivos){
 
@@ -71,20 +179,20 @@ int procesaEntrada(int argc, char **argv, char **dir, int *altura, int *verArchi
 	int c = 0;         // para guardar los valores que encuentra getotp
 	int contador = 0;  // contador para el ciclo for
 	int contador2 = 0; // contador para los condicionales
-	int opterr = 0;    // necesario para getopt     
+	int opterr = 0;    // necesario para getopt
 
-	while ((c = getopt(argc, argv, "fd:m:")) != -1) 
-    { 
-        switch(c)                                        
-        {                                       
+	while ((c = getopt(argc, argv, "fd:m:")) != -1)
+    {
+        switch(c)
+        {
             case 'f':
 
-                *verArchivos = 1;                                   
+                *verArchivos = 1;
 
                 break;
 
             case 'd':
-                 
+
                 flagD = 1;
                 *dir = optarg;
 
@@ -96,35 +204,34 @@ int procesaEntrada(int argc, char **argv, char **dir, int *altura, int *verArchi
 
                 flagM = 1;
 
-                if(opcion <= 0)                                 
+                if(opcion <= 0)
                 	opcion = -1;
 
                 *altura = atoi(optarg);
 
                 /*if(isdigit(optarg))
                 	*altura = atoi(optarg);
-
                 else
                 	*altura = 0;*/
-                
+
                 break;
 
-            case '?':                                     
+            case '?':
 
-                if(optopt == 'd') 
+                if(optopt == 'd')
                     printf ("Debe especificar el directorio\n"
                     	    "Si no lo especifica se toma el actual.\n");
 
                 if(optopt == 'm')
                     printf("Debe especificar la altura maxima de busqueda en el arbol\n"
-                    	   "Si no la especifica se asume que es cualquiera.\n"); 
+                    	   "Si no la especifica se asume que es cualquiera.\n");
 
                 break;
         }
     }
 
-    for(contador = optind; contador < argc; contador++, contador2++); 
-   
+    for(contador = optind; contador < argc; contador++, contador2++);
+
     if(flagD == 0)
         *dir = ".";
 
@@ -137,7 +244,3 @@ int procesaEntrada(int argc, char **argv, char **dir, int *altura, int *verArchi
 
     return opcion;
 }
-
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/*+++++++++++++++++++++++++++++++++++++++++++Pila++++++++++++++++++++++++++++++++++++++++++++*/
-/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/

@@ -70,9 +70,13 @@ Paths* readd(int numLines, char *filename){
 int main(int argc, char *argv[]) {
 
   // primero buscamos los directorios hojas para luego buscar las rutas de los archivos
+  #define SIZEP 100 // tamaño del arreglo que va a contener la direccion inicial
   long size;
   char *buf;
   char *ptr;
+  char startPath[SIZEP];
+  char* c1 = "find ";
+  char* c2 = " -type d -links 2  | tee archivo.txt";
 
   // Buscamos la direccion del path donde estamos situados para despues poder buscar el archivo.txt creado mas adelante
   size = pathconf(".", _PC_PATH_MAX);
@@ -80,9 +84,12 @@ int main(int argc, char *argv[]) {
   ptr = getcwd(buf, (size_t)size); // poner condicional para saber si la ruta que vamos a usar es la de donde estamos parados o la dada por el flag
 
   //printf("PATH %s \n", ptr); // print para verificar el path
-
-  char *command = "find /home/fadasgo/Escritorio/Operativos -type d -links 2  | tee archivo.txt";
-  system(command);
+  memset(startPath,0,SIZEP);
+  strcat(startPath,c1);
+  strcat(startPath,ptr);
+  strcat(startPath,c2);
+  //char *command = "find /home/fadasgo/Escritorio/Operativos -type d -links 2  | tee archivo.txt";
+  system(startPath);
   system("clear");
 
   // ahora procedemos a leer el archivo creado para buscar los archivos de los directorios hojas
@@ -103,11 +110,12 @@ int main(int argc, char *argv[]) {
   //printf("PATH i: %s\n",copiaArrayDirs->name);
 
   system("touch rutas.txt"); // Creamos un archivo nuevo en el cual se van a encontrar las rutas finales
-  char path[500];
+  #define SIZEPATHF 500 // tamaño del arreglo que va a contener la direccion de los archivos contenidos en los directorios hojas
+  char path[SIZEPATHF];
   // Procedemos a buscar por cada directorio hoja sus archivos
   for (int i = 0; i < lines; i++) {
     //printf("%s \n",arrayDirs->name);
-    memset(path,0,500); // reseteamos el arreglo temporal
+    memset(path,0,SIZEPATHF); // reseteamos el arreglo temporal
     strcat(path,cod1);
     strcat(path,arrayDirs->name);
     strcat(path,cod2);
@@ -115,6 +123,6 @@ int main(int argc, char *argv[]) {
     system(path);
     arrayDirs++;
   }
-  printf("PATH %s \n", ptr); // print para verificar el path
+  printf("%s \n", startPath); // print para verificar el path
   return 0;
 }

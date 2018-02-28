@@ -5,7 +5,7 @@
 // Lectura Proyecto I
 
 typedef struct ruta{
-   char name[200]; // Nombre del Producto
+   char name[200]; // contiene la direccion de un directorio hoja
 }Paths;
 // Funciones
 
@@ -79,10 +79,10 @@ int main(int argc, char *argv[]) {
   if ((buf = (char *)malloc((size_t)size)) != NULL);
   ptr = getcwd(buf, (size_t)size); // poner condicional para saber si la ruta que vamos a usar es la de donde estamos parados o la dada por el flag
 
-  //printf("%s\n",ptr ); // print para verificar el path
+  //printf("PATH %s \n", ptr); // print para verificar el path
 
-  char *comand = "find /home/fadasgo/Escritorio/Operativos -type d -links 2  | tee archivo.txt";
-  system(comand);
+  char *command = "find /home/fadasgo/Escritorio/Operativos -type d -links 2  | tee archivo.txt";
+  system(command);
   system("clear");
 
   // ahora procedemos a leer el archivo creado para buscar los archivos de los directorios hojas
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
   Paths* copiaArrayDirs; // Copia de la direccion en donde comienza la lista de productos
   int lines;   // lines contiene el numero de lineas en el archivo
   char* cod1 = "find ";
-  char* cod2 = " -type f >> rutas.txt ";
+  char* cod2 = " -type f >> rutas.txt";
 
   lines = countlines(argv[1]);
   //printf("LINES: %d\n",lines);
@@ -102,19 +102,19 @@ int main(int argc, char *argv[]) {
 
   //printf("PATH i: %s\n",copiaArrayDirs->name);
 
-  // Creamos un archivo nuevo en el cual se van a encontrar las rutas finales
-  system("touch rutas.txt");
+  system("touch rutas.txt"); // Creamos un archivo nuevo en el cual se van a encontrar las rutas finales
   char path[500];
   // Procedemos a buscar por cada directorio hoja sus archivos
   for (int i = 0; i < lines; i++) {
     //printf("%s \n",arrayDirs->name);
-    memset(path,0,500);
+    memset(path,0,500); // reseteamos el arreglo temporal
     strcat(path,cod1);
     strcat(path,arrayDirs->name);
     strcat(path,cod2);
-    printf(" %s \n",path);
+    //printf(" %s \n",path);
+    system(path);
     arrayDirs++;
   }
-
+  printf("PATH %s \n", ptr); // print para verificar el path
   return 0;
 }

@@ -67,7 +67,7 @@ Paths* readd(int numLines, char *filename){
   return InicioArray;
 }
 
-int main(int argc, char *argv[]) {
+int main() {
 
   // primero buscamos los directorios hojas para luego buscar las rutas de los archivos
   #define SIZEP 100 // tamaño del arreglo que va a contener la direccion inicial
@@ -100,11 +100,11 @@ int main(int argc, char *argv[]) {
   char* cod1 = "find ";
   char* cod2 = " -type f >> rutas.txt";
 
-  lines = countlines(argv[1]);
+  lines = countlines("archivo.txt");
   //printf("LINES: %d\n",lines);
   //printf("Lineas \n");
   // Recibimos la direccion donde comienza el arreglo
-  arrayDirs = readd(lines,argv[1]);
+  arrayDirs = readd(lines,"archivo.txt");
   copiaArrayDirs = arrayDirs; // creamos copia del inicio del arreglo dinamico
 
   //printf("PATH i: %s\n",copiaArrayDirs->name);

@@ -116,6 +116,9 @@ int main(int argc, char **argv) {
     }
     //printf("%s \n", startPath); // print para verificar el path
 
+    // En dado caso que si no hay archivos en alguno de los directorios hojas cambiamos la variable verArchivos a 0 para que entre
+    // en el else if y siga como si nada pero hay que recordar limpiar los arreglos(memset) en dado caso para que se guarde bien la informacion (tambien funciona hacerles free)
+
     printf("RUTA %s\n",dir);
   }
 

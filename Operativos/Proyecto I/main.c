@@ -25,7 +25,7 @@ int procesaEntrada(int argc, char **argv, char **dir, int *altura, int *verArchi
 int main(int argc, char **argv) {
 
   /* Variables */
-	int altura = 0;
+	int altura = 20; // por defecto
 	int verArchivos = 0;
 	char *dir = NULL;
 	int opcion = procesaEntrada(argc, argv, &dir, &altura, &verArchivos);

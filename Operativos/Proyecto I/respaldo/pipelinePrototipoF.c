@@ -51,7 +51,7 @@ int main() {
     // Proceso padre
     wait(&estado); // esperamos a que termine el proceso hijo
     // leemos las palabras palindromas que nos pasa el proceso hijo y las imprimimos
-    read(mypipefd[0],buf ,strlen(salida)+1);
+    read(mypipefd[0],buf ,strlen(salida)+5);
     printf("salida: %s\n", buf);
   }
   return 0;

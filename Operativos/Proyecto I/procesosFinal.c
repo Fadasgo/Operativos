@@ -31,13 +31,17 @@ int main() {
   if (pid == 0) {
     printf("Child read: %s\n", shmem);
     salida = eliminaSlash(shmem);
-    printf("SALIDA %s\n",salida );
+    //printf("SALIDA %s\n",salida );
     memcpy(shmem, salida, strlen(salida));
     salida2 = Palindromos(shmem);
     memcpy(shmem, salida2, strlen(salida2));
     printf("Child wrote: %s\n", shmem);
-
-  } else {
+  }
+  else if (pid < 0) {
+    perror("Hubo un problema al realizar el fork");
+    exit(-1);
+  }
+  else {
     printf("Parent read: %s\n", shmem);
     sleep(1);
     printf("After 1s, parent read: %s\n", shmem);

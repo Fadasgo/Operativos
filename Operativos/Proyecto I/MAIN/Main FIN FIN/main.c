@@ -195,41 +195,25 @@ int main(int argc, char **argv) {
     printf("RUTA %s\n",dir);
 
   }
-  int lin;
+  /*int lin;
   Paths* arrayyF;
   Paths* copiaArrayyF;
-  Paths* p;
-  //char* pr[SIZEPATHF*lin];
+  Paths p;*/
 
 
   // leemos los archivos en caso de haber usado -f y aplicamos procesos
-  if (verArchivos == 1) {
+  /*if (verArchivos == 1) {
     lin = countlines("rutas.txt");
-    char* pr[SIZEPATHF*lin];
     //printf("LINES: %d\n",lines);
     //printf("Lineas \n");
     // Recibimos la direccion donde comienza el arreglo
     arrayyF = readd(lin,"rutas.txt");
     copiaArrayyF = arrayyF; // creamos copia del inicio del arreglo dinamico
 
-    for (int i = 0; i < lin; i++) {
-      //printf("%s \n",arrayDirs->name);
-      memset(pr,0,SIZEPATHF*lin); // reseteamos el arreglo temporal
-      //strcat(pr,"echo ");
-      strcat(pr,arrayyF->name);
-
-      //system(pr);
-      arrayyF++;
-      //printf("RE %s\n",re );
-    }
-
-    /*for(int i = 0; i < lin;i++){
+    for(int i = 0; i < lin;i++){
       int control = 0;
-      //p->name = arrayyF;
-      strcpy(p->name, arrayyF);
-      //char* pr = p->name;
-      strcat(pr, p->name);
-      printf("%s\n",pr );
+      p->name = ArrayyF;
+      char* pr = p->name;
       char* salida;
       char* salida2;
       int tamano = sizeof(pr);
@@ -264,31 +248,32 @@ int main(int argc, char **argv) {
       printf("\n");
       arrayyF++;
 
-    }*/
-  }
+    }
+  }*/
   // leemos los archivos en caso de no haber usado -f y aplicamos procesos
-  /*else if (verArchivos == 0) {
-    //int lin;
-    //Paths* arrayyF;
-    //Paths* copiaArrayyF;
-    //Paths* p;
+  /*if (verArchivos == 0) {
+    int lin;
+    Paths* arrayyF;
+    Paths* copiaArrayyF;
+    Paths p;
     lin = countlines("dirFinal.txt");
     //printf("LINES: %d\n",lines);
     //printf("Lineas \n");
     // Recibimos la direccion donde comienza el arreglo
     arrayyF = readd(lin,"dirFinal.txt");
     copiaArrayyF = arrayyF; // creamos copia del inicio del arreglo dinamico
-    //p->name = arrayyF;
-    strcpy(p->name, arrayyF);
+    p->name = ArrayyF;
     char* pr = p->name;
     int control = 0;
     char* salida;
     char* salida2;
     int tamano = sizeof(pr);
 
+    int tamano = sizeof(pr);
+
     void* shmem = create_shared_memory(tamano);
     //memcpy(shmem, pr, strlen(pr));
-    //memset(shmem,0,typeof(Paths)*lin);
+    memset(shmem,0,typeof(Paths)*lin);
 
     int pid = fork();
 

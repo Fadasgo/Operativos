@@ -201,7 +201,7 @@ int main(int argc, char **argv) {
   Paths* p;
   //char* pr[SIZEPATHF*lin];
 
-
+  printf("\n Palindromos -- \n");
   // leemos los archivos en caso de haber usado -f y aplicamos procesos
   if (verArchivos == 1) {
     lin = countlines("rutas.txt");
@@ -213,10 +213,44 @@ int main(int argc, char **argv) {
     copiaArrayyF = arrayyF; // creamos copia del inicio del arreglo dinamico
 
     for (int i = 0; i < lin; i++) {
-      //printf("%s \n",arrayDirs->name);
-      memset(pr,0,SIZEPATHF*lin); // reseteamos el arreglo temporal
+      //printf("%s \n",arrayDirs->name)
       //strcat(pr,"echo ");
       strcat(pr,arrayyF->name);
+
+      int control = 0;
+      char* salida;
+      char* salida2;
+      int tamano = sizeof(pr);
+
+      void* shmem = create_shared_memory(tamano);
+
+      //memcpy(shmem, pr, strlen(pr));
+
+      int pid = fork();
+
+      if (pid == 0) {
+        //printf("Child read: %s\n", pr);
+        salida = eliminaSlash(pr);
+        //printf("SALIDA %s\n",salida );
+        //memcpy(shmem, salida, strlen(salida)+1);
+        Palindromos(salida, shmem, control);
+        //memcpy(shmem, salida2, strlen(salida2)+1);
+        //printf("Child wrote: %s\n", salida2);
+        exit(0);
+      }
+      else if (pid < 0) {
+        perror("Hubo un problema al realizar el fork");
+        exit(-1);
+      }
+      else {
+        //wait(NULL);
+        parentProces(shmem, control);
+        //sleep(1);
+        //printf("After 1s, parent read: %s\n", shmem);
+      }
+      memset(pr,0,SIZEPATHF*lin); // reseteamos el arreglo temporal
+      //printf("\n");
+
 
       //system(pr);
       arrayyF++;

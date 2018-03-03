@@ -17,34 +17,39 @@ char* eliminaSlash(char *palabrita);
 
 int main() {
 
-  char* pr = "home/assa/CaSac";
+  char* pr = "home/Reconocer/CaSac/asa/asa/haza/asa";
   char* salida;
   char* salida2;
 
 
-  void* shmem = create_shared_memory(1024);
+  void* shmem = create_shared_memory(512);
 
-  memcpy(shmem, pr, strlen(pr));
+  //memcpy(shmem, pr, strlen(pr));
 
   int pid = fork();
 
   if (pid == 0) {
-    printf("Child read: %s\n", shmem);
-    salida = eliminaSlash(shmem);
+    printf("Child read: %s\n", pr);
+    salida = eliminaSlash(pr);
     //printf("SALIDA %s\n",salida );
-    memcpy(shmem, salida, strlen(salida)+1);
-    salida2 = Palindromos(shmem);
+    salida2 = Palindromos(salida);
     memcpy(shmem, salida2, strlen(salida2)+1);
-    printf("Child wrote: %s\n", shmem);
+    //memcpy(shmem[strlen(salida2)+1],'\0',1);
+    //memcpy(shmem, salida2, strlen(salida2)+1);
+    //printf("Child wrote: %s\n", salida2);
+    //prinf(shmem);
+    exit(0);
   }
   else if (pid < 0) {
     perror("Hubo un problema al realizar el fork");
     exit(-1);
   }
   else {
-    printf("Parent read: %s\n", shmem);
+    //printf("Parent read: %s\n", shmem);
+    wait(NULL);
     sleep(1);
-    printf("After 1s, parent read: %s\n", shmem);
+    //printf("After 1s, parent read: %s\n", shmem);
+    printf("LISTOLIN %s",shmem);
   }
 
   return 0;
@@ -116,7 +121,7 @@ char *Palindromos(char *palabra){
 
         if(strlen(final) != 0)
         {
-          final = realloc(final, sizeof(char) * (largo + largo2 + 1));
+          final = realloc(final, sizeof(char) * (largo + largo2 +1));
           sprintf(final, "%s%c", final, ',');
           sprintf(final, "%s%c", final, ' ');
           sprintf(final, "%s%s", final, pal);
@@ -174,6 +179,7 @@ char* eliminaSlash(char *palabrita) {
 
     sprintf(resultado, "%s%c", resultado, *(palabrita + i));
   }
+
   return resultado;
 
 }

@@ -7,9 +7,11 @@
 #include <sys/wait.h>
 #include <sys/mman.h>
 
+void parentProces(void * shmem, int control);
+
 void* create_shared_memory(size_t size);
 
-char *Palindromos(char *palabra);
+void Palindromos(char *palabra, void *shmem, int control);
 
 int cuentaSlashs(char *palabrita);
 
@@ -17,35 +19,41 @@ char* eliminaSlash(char *palabrita);
 
 int main() {
 
-  char* pr = "home/assa/CaSac";
+  int control = 0;
+  char* pr = "homeReconocerCaSacasaasahazaasa";
   char* salida;
   char* salida2;
+  int tamano = sizeof(pr);
 
 
-  void* shmem = create_shared_memory(1024);
+  void* shmem = create_shared_memory(tamano);
 
-  memcpy(shmem, pr, strlen(pr));
+  //memcpy(shmem, pr, strlen(pr));
 
   int pid = fork();
 
   if (pid == 0) {
-    printf("Child read: %s\n", shmem);
-    salida = eliminaSlash(shmem);
+    printf("Child read: %s\n", pr);
+    salida = eliminaSlash(pr);
     //printf("SALIDA %s\n",salida );
-    memcpy(shmem, salida, strlen(salida)+1);
-    salida2 = Palindromos(shmem);
-    memcpy(shmem, salida2, strlen(salida2)+1);
-    printf("Child wrote: %s\n", shmem);
+    //memcpy(shmem, salida, strlen(salida)+1);
+    Palindromos(salida, shmem, control);
+    //memcpy(shmem, salida2, strlen(salida2)+1);
+    //printf("Child wrote: %s\n", salida2);
+    //exit(0);
   }
   else if (pid < 0) {
     perror("Hubo un problema al realizar el fork");
     exit(-1);
   }
   else {
-    printf("Parent read: %s\n", shmem);
-    sleep(1);
-    printf("After 1s, parent read: %s\n", shmem);
+    //wait(NULL);
+    parentProces(shmem, control);
+    //sleep(1);
+    //printf("After 1s, parent read: %s\n", shmem);
   }
+
+  printf("\n");
 
   return 0;
 }
@@ -64,7 +72,7 @@ void* create_shared_memory(size_t size) {
   return mmap(NULL, size, protection, visibility, 0, 0);
 }
 
-char *Palindromos(char *palabra){
+void Palindromos(char *palabra, void *shmem, int control){
 
   int i = 0;
   int j = 0;
@@ -72,11 +80,12 @@ char *Palindromos(char *palabra){
   int a = 0;
   int b = 0;
   int c = 0;
-  int control = 0;
+  //int control = 0;
   int palindromo = 1;
   int intermedio = strlen(palabra);
   char *pal;
   char *final = malloc((sizeof(char)) * 1);
+  char *final2 = "";
 
   for(int m = 2; m < intermedio; m++)
   {
@@ -111,31 +120,78 @@ char *Palindromos(char *palabra){
         pal = malloc((sizeof(char)) * m);
         strncpy(pal, palabra + i, m + 1);
 
-        largo = strlen(pal);
-        largo2 = strlen(final);
+        //printf("Palcito: %s\n", pal);
 
-        if(strlen(final) != 0)
+        memcpy(shmem, pal, strlen(pal)+1);
+
+        parentProces(shmem, control);
+
+        //printf("El mem: %s\n\n", shmem);
+
+        //free(pal);
+
+        /*printf("para ver quecarrizo consigue: %s\n", pal);
+
+        largo = strlen(pal);
+        largo2 = strlen(final2);
+
+        printf("largo de final2: %d\n", largo2);
+
+        if(largo2 != 0)
         {
-          final = realloc(final, sizeof(char) * (largo + largo2 + 1));
-          sprintf(final, "%s%c", final, ',');
-          sprintf(final, "%s%c", final, ' ');
-          sprintf(final, "%s%s", final, pal);
-          sprintf(final, "%s%c", final, ' ');
+          //final = realloc(final, sizeof(char) * (largo + largo2 +1));
+          printf("final2 antes del cambio: %s\n", final2);
+
+          final2 = malloc((sizeof(char))*(largo + largo2 + 1));
+
+          strcpy(final2, final);
+
+          printf("final le pasa a final2: %s\n", final);
+          printf("final2 copiando lo que tiene final: %s\n", final2);
+
+          final = malloc((sizeof(char))*(largo + largo2 + 1));
+
+
+          printf("final2 no  wi: %s\n", final2);
+
+          printf("pal: %s\n", pal);
+
+          sprintf(final2, "%s%c", final2, ',');
+          sprintf(final2, "%s%c", final2, ' ');
+          sprintf(final2, "%s%s", final2, pal);
+          sprintf(final2, "%s%c", final2, ' ');
+
+          strcpy(final, final2);
+
+          printf("pal: %s\n", pal);
+          printf("final2 en procesamiento: %s\n\n", final2);
         }
 
         else
         {
-          final = (char*)realloc(final, (sizeof(char)) * (largo + largo2));
+          //final = (char*)realloc(final, (sizeof(char)) * (largo + largo2));
+          final = malloc((sizeof(char))*(largo + largo2 +1));
+          final2 = malloc((sizeof(char))*(largo + largo2 +1));
+
           sprintf(final, "%s", pal);
+          sprintf(final2, "%s", pal);
+          printf("pal 1 aqui: %s\n", pal);
+          printf("final2 con primer elemento: %s\n\n", final2);
         }
 
         free(pal);
+        free(final);
+        free(final2);*/
 
       }
     }
   }
 
-  return final;
+  //free(final);
+  //free(final2);
+  //printf("final2: %s\n", final2);
+
+  //return final2;
 }
 
 int cuentaSlashs(char *palabrita) {
@@ -174,6 +230,22 @@ char* eliminaSlash(char *palabrita) {
 
     sprintf(resultado, "%s%c", resultado, *(palabrita + i));
   }
+
   return resultado;
+
+}
+
+void parentProces(void * shmem, int control){
+
+  if(control == 1 && strlen(shmem) != 0)
+  {
+    control = 1;
+    printf("%s", shmem);
+  }
+
+  else if(control == 0 && strlen(shmem) != 0)
+  {
+    printf(", %s", shmem);
+  }
 
 }

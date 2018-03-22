@@ -6,6 +6,7 @@
 typedef struct datos_{
    char*  ruta[8000];
    char*  palab[1000];
+   int hashNum;
 }datos;
 
 pthread_mutex_t lock;
@@ -15,14 +16,13 @@ void* pasoDeDatos(void* dat);
 
 int main(){
   // memset y strcpy
-  // El shellscript me pasa el apuntador a la coincidencia
-  // debo revisar en el txt de los hash el match con alguna de las palabras del hash
-  // en caso de que no haga match meterla en la funcion de hash y guardarla al final del txt
+  // El shellscript me pasa la ruta y palabra
   char* prueba = "./home/ruta/casa";
   char* pa = "casa";
   int h1;
 
   datos* para = malloc(sizeof(datos));
+  para->hashNum = 5555;
   strcpy(para->ruta,prueba);
   strcpy(para->palab,pa);
 
@@ -41,18 +41,22 @@ void* pasoDeDatos(void* dat){
   datos* dato = (datos *)dat;
   char* prueba;
   char* palab;
+  int HashNumber;
 
   prueba = dato->ruta;
   palab = dato->palab;
+  HashNumber = dato->hashNum;
   //free(dato);
 
-  // Realizamos lock (Mutex)
+  // Realizamos Mutex (lock)
   pthread_mutex_lock(&lock);
 
   // Aqui va la funcion de Albert
   printf(prueba);
   printf("\n");
   printf(palab);
+  printf("\n");
+  printf("HashNumber %d",HashNumber);
 
   pthread_mutex_unlock(&lock);
 }

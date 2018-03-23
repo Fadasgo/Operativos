@@ -12,9 +12,7 @@ read tipo
 
 if [[ "$tipo" = "d" ]];
 then
-  echo "$tipo"
   Buscada_Dir=`find $dirToSearch -type d -name "$1"`
-  echo "$dirToSearch"
   if [ $Buscada_Dir -z ]
   then
     echo "la direccion ingresada esta vacia - aborta"

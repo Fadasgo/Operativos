@@ -1,13 +1,13 @@
 #!/bin/bash
 #Busqueda directa a traves
-echo -e "\nIngrese la direccion COMPLETA a buscar \n"
+echo -e "\nIngrese la direccion COMPLETA a buscar:"
 #variable para ingresar una direccion a buscar
 read dirToSearch
 
 #echo $dirToSearch
 
 #variable que indentifica si es directorio o archivo
-echo "Ingrese el tipo de busqueda: Si es archivo f, si es directorio: d "
+echo "Ingrese el tipo de busqueda: Si es archivo: f, si es directorio: d "
 read tipo
 
 if [[ "$tipo" = "d" ]];

@@ -4,36 +4,49 @@ echo -e "\nIngrese la direccion COMPLETA a buscar \n"
 #variable para ingresar una direccion a buscar
 read dirToSearch
 
-echo $dirToSearch
+#echo $dirToSearch
 
 #variable que indentifica si es directorio o archivo
 echo "Ingrese el tipo de busqueda: Si es archivo f, si es directorio: d "
 read $tipo
 
-if [[ $tipo == "d" ]];
+if [[ "$tipo" = "d" ]];
 then
-  Busca_Dir=`find $dirToSearch -type d -name "$1"`
-
-  if [ $Busca_Dir -z ]
+  echo "$tipo"
+  Buscada_Dir=`find $dirToSearch -type d -name "$1"`
+  echo "$dirToSearch"
+  if [ $Buscada_Dir -z ]
   then
     echo "la direccion ingresada esta vacia - aborta"
     exit 1
   else
-    echo -e "$Busca_Dir \n"
+    echo -e "$Buscada_Dir \n"
   fi
 
 elif [[ $tipo == "f" ]];
 then
-  Busca_Dir=`find $dirToSearch -type f -name "$1"`
+  Buscada_Dir=`find $dirToSearch -type f -name "$1"`
 
-  if [ $Busca_Dir -z ]
+  if [ $Buscada_Dir -z ]
   then
     echo "la direccion ingresada esta vacia - aborta"
     exit 1
   else
-    echo -e "$Busca_Dir \n"
+    echo -e "$Buscada_Dir \n"
   fi
 fi
+# fin de estructura de verificacion
 
+#escritura del txt
 
-#estructura de verificacion
+archIndx=archIndx.txt
+
+if [ -f $archIndx ] #aqui se encarga de revisar si es directorio
+then
+    echo "el indice, $archIndx existe"
+    echo "$Buscada_Dir" >> "$archIndx"
+
+else
+    echo "Se creara un archivo indice, $archIndx"
+    touch $archIndx
+fi

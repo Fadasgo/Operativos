@@ -23,7 +23,7 @@ then
     echo -e "$Buscada_Dir \n"
   fi
 
-elif [[ $tipo == "f" ]];
+elif [[ "$tipo" == "f" ]];
 then
   Buscada_Dir=`find $dirToSearch -type f -name "$1"`
 
@@ -43,7 +43,7 @@ archIndx=archIndx.txt
 
 if [ -f $archIndx ] #aqui se encarga de revisar si es directorio
 then
-    echo "el indice, $archIndx existe"
+    echo "Ha indexado nuevas rutas"
     echo "$Buscada_Dir" >> "$archIndx"
 
 else

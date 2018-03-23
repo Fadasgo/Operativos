@@ -12,7 +12,7 @@ read tipo
 
 if [[ "$tipo" = "d" ]];
 then
-  Buscada_Dir=`find $dirToSearch -type d -name "$1"`
+  Buscada_Dir=`find $dirToSearch -type d -name *$1*`
   if [ $Buscada_Dir -z ]
   then
     echo "la direccion ingresada esta vacia - aborta"
@@ -23,7 +23,7 @@ then
 
 elif [[ "$tipo" == "f" ]];
 then
-  Buscada_Dir=`find $dirToSearch -type f -name "$1"`
+  Buscada_Dir=`find $dirToSearch -type f -name *$1*`
 
   if [ $Buscada_Dir -z ]
   then
@@ -41,7 +41,11 @@ archIndx=archIndx.txt
 
 if [ -f $archIndx ] #aqui se encarga de revisar si es directorio
 then
-    echo "Ha indexado nuevas rutas"
+    IFS='/' read -ra ADDR <<< "$Buscada_Dir"
+    len=${#ADDR[@]}
+    echo "${ADDR[$len - 1]}" >> "$archIndx"
+
+    echo "$1" >> "$archIndx"
     echo "$Buscada_Dir" >> "$archIndx"
 
 else

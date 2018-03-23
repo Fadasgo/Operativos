@@ -9,7 +9,7 @@ if [ -d $1 ] #aqui se encarga de revisar si es directorio
 then
     echo "el directorio: $1 exist"
 
-elif [ -f $1 ]#aqui si es para verifircar si existe
+elif [ -f $1 ] #aqui si es para verifircar si existe
 then
   echo "el archivo: $1 existe"
 
@@ -18,5 +18,16 @@ else
 fi
 
 #Busqueda directa a traves
-Busca_Dir=`find $1 ~/Operativos/`
+echo -e "Ingrese la direccion a buscar \n \nSi desea la Carpeta actual ingrese: . \n"
+#variable para ingresar una direccion a buscar
+read dirToSearch
+
+echo $dirToSearch
+
+Busca_Dir=`find $dirToSearch -type d -name "$1"`
+
+echo $1
+#estructura de verificacion
+
+
 echo -e "$Busca_Dir \n"

@@ -8,7 +8,7 @@ read dirToSearch
 
 #variable que indentifica si es directorio o archivo
 echo "Ingrese el tipo de busqueda: Si es archivo f, si es directorio: d "
-read $tipo
+read tipo
 
 if [[ "$tipo" = "d" ]];
 then

@@ -4,6 +4,7 @@ then
     echo "Usage - $0  file-name"
     exit 1
 fi
+
 #$1 es la variable que contiene la palabra ingresada
 if [ -d $1 ] #aqui se encarga de revisar si es directorio
 then
@@ -26,8 +27,10 @@ echo $dirToSearch
 
 Busca_Dir=`find $dirToSearch -type d -name "$1"`
 
-echo $1
+if [ $Busca_Dir -z ]
+then
+  echo "judete"
+else
+  echo -e "$Busca_Dir \n"
+fi
 #estructura de verificacion
-
-
-echo -e "$Busca_Dir \n"

@@ -8,16 +8,12 @@
 #include <dirent.h>
 #include <sys/types.h>
 
-/* Estructuras */
-
 /* Prototipos de funciones */
 
 int procesaEntrada(int argc, char **argv, char **dir, int *altura, 
-                   char **indice, int *noupdate, int *noadd);
+                char **indice, int *noupdate, int *noadd, char **palabraClave);
 
-int cuentaSlashs(char *palabrita);
-
-char* eliminaSlash(char *palabrita);
+int comparaString(char *contenidoArgv, char *Acomparar);
 
 int main(int argc, char **argv){
 
@@ -27,12 +23,14 @@ int main(int argc, char **argv){
     int noupdate = 0;
 	char *indice = NULL;
 	char *dir = NULL;
+    char *palabraClave = NULL;
+
 	int opcion = procesaEntrada(argc, argv, &dir, &altura, &indice, 
-                                &noupdate, &noadd);
+                                &noupdate, &noadd, &palabraClave);
 
 	if(opcion < 0)                                                
     {                                                
-        printf("¡ERROR!\nEl programa se cerrara.\n");
+        printf("¡ERROR!\nLos parametros de entrada no son los correctos\nEl programa se cerrara.\n");
         return 0;
     }
 
@@ -41,86 +39,122 @@ int main(int argc, char **argv){
     printf("indice: %s\n", indice);
     printf("noupdate: %d\n", noupdate);
     printf("noadd: %d\n", noadd);
+    printf("palabraClave: %s\n", palabraClave);
 
     printf("Todo correcto\n");
 }
 
 int procesaEntrada(int argc, char **argv, char **dir, int *altura, 
-                   char **indice, int *noupdate, int *noadd){
+                char **indice, int *noupdate, int *noadd,char **palabraClave){
 
-	int opcion = 0;    // valor a retornar
-	int flagD = 0;     // comprobamos si en la entrada esta presente -d
-	int flagM = 0;     // comprobamos si en la entrada esta presente -m
-	int c = 0;         // para guardar los valores que encuentra getotp
-	int contador = 0;  // contador para el ciclo for
-	int contador2 = 0; // contador para los condicionales
-	int opterr = 0;    // necesario para getopt     
+	int opcion = 0;      // valor a retornar
+    int i = 0;
 
-	while ((c = getopt(argc, argv, "uad:m:i:")) != -1) 
-    { 
-        switch(c)                                        
-        {                                       
-            case 'i':
+    for(i = 0; i < argc; i++)
+    {
+        if(argv[i][0] == '-' && argv[i][1] != '-')
+        {
+            if(argv[i][1] == 'd')
+            {
+                if((i + 1) >= argc || argv[i+1][0] == '-')
+                    opcion = -1;
 
-                //Aqui hay algo mas, pero de momento lo dejare asi
-                *indice = optarg;                                   
-                break;
+                else
+                    *dir = argv[i + 1];
+            }
 
-            case 'd':
-                 
-                flagD = 1;
-                *dir = optarg;
+            else if(argv[i][1] == 'm')
+            {
+                if((i + 1) >= argc || argv[i+1][0] == '-')
+                    opcion = -1;
 
-                break;
+                else
+                    *altura = atoi(argv[i + 1]);
+            }
 
-            case 'm':
+            else if(argv[i][1] == 'i')
+            {
+                if((i + 1) >= argc || argv[i+1][0] == '-')
+                    opcion = -1;
 
-            	sscanf(optarg, "%d", &opcion);
+                else
+                    *indice = argv[i + 1];
+            }
 
-                flagM = 1;
+            else if(argv[i][1] == 'b')
+            {
+                if((i + 1) >= argc || argv[i+1][0] == '-')
+                    opcion = -1;
 
-                if(opcion <= 0)                                 
-                	opcion = -1;
+                else
+                    *palabraClave = argv[i + 1];
+            }
 
-                *altura = atoi(optarg);
-                
-                break;
-
-            case 'a':
-
-                *noupdate = 1;
-                break;
-
-            case 'u':
-
+            else if(argv[i][1] == 'a')
+            {
                 *noadd = 1;
-                break;
+            }
 
-            case '?':                                     
+            else if(argv[i][1] == 'u')
+            {
+                *noupdate = 1;
+            }
+        }
 
-                if(optopt == 'd') 
-                    printf ("Debe especificar el directorio\n"
-                    	    "Si no lo especifica se toma el actual.\n");
+        else if(argv[i][0] == '-' && argv[i][1] == '-')
+        {
+            if(comparaString(argv[i], "dir"))
+            {
+                if((i + 1) >= argc || argv[i+1][0] == '-')
+                    opcion = -1;
 
-                if(optopt == 'm')
-                    printf("Debe especificar la altura maxima de busqueda en el arbol\n"
-                    	   "Si no la especifica se asume que es cualquiera.\n"); 
+                else
+                    *dir = argv[i + 1];
+            }
 
-                break;
+            else if(comparaString(argv[i], "max"))
+            {
+                if((i + 1) >= argc || argv[i+1][0] == '-')
+                    opcion = -1;
+
+                else
+                    *altura = atoi(argv[i + 1]);
+            }
+
+            else if(comparaString(argv[i], "index"))
+            {
+                if((i + 1) >= argc || argv[i+1][0] == '-')
+                    opcion = -1;
+
+                else
+                    *indice = argv[i + 1];
+            }
+
+            else if(comparaString(argv[i], "noupdate"))
+            {
+                *noupdate = 1;
+            }
+
+            else if(comparaString(argv[i], "noadd"))
+            {
+                *noadd = 1;
+            }
         }
     }
 
-    for(contador = optind; contador < argc; contador++, contador2++); 
-   
-    if(flagD == 0)
-        *dir = ".";
+    return opcion;
+}
 
-    if(contador2 > 1)
+int comparaString(char *contenidoArgv, char *Acomparar){
+
+    int i = 0;
+    int len = strlen(Acomparar);
+
+    for(i = 0; i < len; i++)
     {
-        printf( "¡ERROR!\n" );
-        printf( "Los argumentos de entrada son incorrectos\n" );
-        opcion = -1;
+        if(*(contenidoArgv + (i+2)) != *(Acomparar + i))
+            return 0;
     }
 
-    return opcion;
+    return 1;
 }

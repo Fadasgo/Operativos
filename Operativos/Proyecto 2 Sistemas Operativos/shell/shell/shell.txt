@@ -1,0 +1,16 @@
+()
+Tarea
+Tarea
+/home/fadasgo/casa/Tarea
+FinDelBloque
+()
+Plan
+Plan
+/home/fadasgo/casa/Plan
+/home/fadasgo/casa/cosa/Plan
+/home/fadasgo/Plan
+FinDelBloque
+()
+casa
+/home/fadasgo/casa
+FinDelBloque

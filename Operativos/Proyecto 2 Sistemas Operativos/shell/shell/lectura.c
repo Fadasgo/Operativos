@@ -77,42 +77,37 @@ void readd(int numLines, char *filename){
     token = strtok(line,"\t");
     /* iteramos sobre los otros token */
     while( token != NULL ) {
-
-      if (contador == 0) {
-        if (comparaString2(token,abrir)) {
-          printf("ENTROOOOO\n");
-          contador = 0;
-          numero = numero + 1;
-          contador = contador + 1;
-        }
+      if (comparaString2(token,abrir)) {
+        printf("ENTROOOOO\n");
+        contador = 0;
+        numero = numero + 1;
+        contador = contador + 1;
       }
-      else if (contador == 1 ) {
+      if (comparaString2(token,Fin)) { // si termino el bloque
+        contador = 0;
+      }
+      if (contador == 1 ) {
         clave = token;
+        contador = contador + 1;
+        printf("ARCHIVO %s\n",palabraArchivo);
+      }
+      if (contador == 2) {
+        palabraArchivo = token;
         contador = contador + 1;
         printf("CLAVE %s\n",clave);
       }
-      else if (contador == 2) {
-        palabraArchivo = token;
-        contador = contador + 1;
-        printf("archivo %s\n",palabraArchivo);
-      }
-      else if(contador > 2){
-        if(comparaString2(token,Fin) != 1) {
-          ruta = token;
-          printf("RUTA %s\n",ruta);
-          // llamamos a la funcion de hash de Albert para pasarle los parametros
-          //coincidePalabra(ruta, palabraArchivo, clave, Tabla);
-        }
-
-        else if(comparaString2(token,Fin)) {
-          contador = 0;
-        }
+      if(contador > 2){
+        ruta = token;
+        printf("RUTA %s\n",ruta);
+        // llamamos a la funcion de hash de Albert para pasarle los parametros
+        //coincidePalabra(ruta, palabraArchivo, clave, Tabla);
       }
       //printf("contador %d\n", contador );
-      //printf( "token %s\n", token ); //--------> Imprime y muestra que esta leyendo bien
+      printf( "token %s\n", token ); //--------> Imprime y muestra que esta leyendo bien
       token = strtok(NULL,"\t");
-      //contador++;
+      contador++;
     }
+    contador = 0; // restablecemos el contador para la siguiente linea
   }
 	free(line);
 	fclose(file);
@@ -123,11 +118,8 @@ void readd(int numLines, char *filename){
 int comparaString2(char *str1, char *str2){
 
   int i = 0;
-  int len1 = strlen(str1) - 1;
+  int len1 = strlen(str1);
   int len2 = strlen(str2);
-
-  //printf("Dentro de la funcion comparar\n");
-  //printf("strlen(str1): %d\nstr1: %s\nstrlen(str2): %d\nstr2: %s\n", strlen(str1), str1, strlen(str2), str2);
 
   if(len1 != len2)
   {
@@ -140,5 +132,5 @@ int comparaString2(char *str1, char *str2){
       return 0; // no son iguales
 	}
 
-  return 1; // son iguales
+    return 1; // son iguales
 }

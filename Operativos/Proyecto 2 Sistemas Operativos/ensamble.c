@@ -37,10 +37,10 @@ typedef struct TablaHash
 }TablaHash;
 
 typedef struct datos_{
-   char*  ruta[8000];
-   char*  palab[1000];
-   int hashNum;
-	 TablaHash *tabla;
+
+	char* txtName[25];
+	TablaHash* tabla;
+
 }datos;
 
 pthread_mutex_t lock;
@@ -64,71 +64,40 @@ int funcionHashTabla(char *palabra);
 
 int funcionHashTablita(char *palabra);
 
+void shell(void* txt);
+
+int countlines(char *filename);
+
+void readd(int numLines, char *filename, TablaHash *Tabla);
+
+int comparaString2(char *str1, char *str2);
+
 TablaHash *CrearTabla();
 
 void coincidePalabra(char *ruta, char *palabra, char *clave, TablaHash *Tabla);
 
 /* Funcion main */
 // Yeeeeeiiii
-int main(int argc, char **argv){
-
-	/* Variables */
-	int altura = 20;
-  int noadd = 0;
-  int noupdate = 0;
-	char *indice = NULL;
-	char *dir = NULL;
-  char *palabraClave = NULL;
-
-	int opcion = procesaEntrada(argc, argv, &dir, &altura, &indice,
-                                &noupdate, &noadd, &palabraClave);
-
-	if(opcion < 0)
-    {
-        printf("¡ERROR!\nLos parametros de entrada no son los correctos\nEl programa se cerrara.\n");
-        return 0;
-    }
-
-    printf("Altura: %d\n", altura);
-    printf("Direccion: %s\n", dir);
-    printf("indice: %s\n", indice);
-    printf("noupdate: %d\n", noupdate);
-    printf("noadd: %d\n", noadd);
-    printf("palabraClave: %s\n", palabraClave);
-
-    printf("Todo correcto\n");
-
-
+//int main(int argc, char **argv){
+int main(){
+	char* txt = "shell.txt"; // parametro por defecto a menos que se cambie por flag
+  int h1;
+	int h2;
 	TablaHash *Tabla = CrearTabla();
 
-	char *p1 = "/Estructuras/Hola que haces?";
-	char *p2 = "Hola que haces?";
-	char *p3 = "Hola";
-	char *p4 = "que";
-	char *p5 = "haces?";
-	char *d1 = "/Estructuras/se es";
-	char *d2 = "se es";
-	char *d3 = "es";
-	char *d4 = "se";
-	int c1 = 0;
-	int c2 = 0;
-	char* prueba = "./home/ruta/casa";
-  char* pa = "casa";
-  int h1;
-
-  datos* para = malloc(sizeof(datos));
-  para->hashNum = 0;
-  strcpy(para->ruta,prueba);
-  strcpy(para->palab,pa);
-	para->tabla = Tabla;
+	datos* dat = malloc(sizeof(datos));
+	dat->tabla = Tabla;
+	strcpy(dat->txtName,txt);
 
   pthread_t thread1;
+	pthread_t thread2;
 
-
-  h1 = pthread_create(&thread1,NULL,pasoDeDatos,(void *)para);// Le pasamos la palabra que hay que buscar
-  // en el indizador
+  h1 = pthread_create(&thread1,NULL,shell,(void *)txt); // 1er hilo para buscar los parametros
+	h2 = pthread_create(&thread2,NULL,pasoDeDatos,(void *)dat); // 2do hilo para cargarlos en la tabla de hash
 
   pthread_join(thread1, NULL);// 2do parametro es el return de la funcion
+	pthread_join(thread2, NULL);
+
 }
 
 /* Funciones */
@@ -235,7 +204,7 @@ int funcionHashTablita(char *palabra){
 }
 
 void coincidePalabra(char *ruta, char *palabra, char *clave, TablaHash *Tabla){
-
+ //esto es un comentario
 	int i = 0;
 	int j = 0;
 	int k = 0;
@@ -341,57 +310,29 @@ void coincidePalabra(char *ruta, char *palabra, char *clave, TablaHash *Tabla){
 
 void* pasoDeDatos(void* dat){
 
-  datos* dato = (datos *)dat;
-  char* prueba;
-  char* palab;
-  int HashNumber;
-	TablaHash* Tabla;
+	datos* dato = (datos *)dat;
+  char* nombreTxt;
+  TablaHash *Tabla;
 
-
-  prueba = dato->ruta;
-  palab = dato->palab;
-  HashNumber = dato->hashNum;
-	Tabla = dato->tabla;
-  //free(dato);
+  nombreTxt = dato->txtName;
+  Tabla = dato->tabla;
 
   // Realizamos Mutex (lock)
   pthread_mutex_lock(&lock);
+	printf("ENTRO EN LA FUNCION DE ALBERT \n");
+	int lines = countlines(nombreTxt);
 
-  // Aqui va la funcion de Albert
-  printf(prueba);
-  printf("\n");
-  printf(palab);
-  printf("\n");
-  printf("HashNumber %d",HashNumber);
+  //printf("LINES: %d\n",lines);
+  //printf("Lineas \n");
+  readd(lines,nombreTxt,Tabla);
 
-	NodoHash *nodo1;
-	nodo1 = malloc(sizeof(NodoHash));
-	nodo1->ruta = prueba;
-	nodo1->palabraArchivo = palab;
-	nodo1->clave = HashNumber;
 
-	InsertarNodoEnTabla(Tabla, funcionHashTabla(nodo1->clave), funcionHashTablita(nodo1->clave), nodo1);
+	//coincidePalabra(prueba, palab, HashNumber, Tabla);
 
-	MostrarElementosEnTabla(Tabla);
-
-	/* pruebas de coincidencia */
-
-	/*char *ruta1 = "Escritorio/jupy/no se que hacer.doc";
-	char *palabra1 = "no se que hacer";*/
-	char *coin1 = "que";
-	char *coin11 = "que hacer";
-	char *coin12 = "no";
-
-	printf("\nCoincidencia1\n\n");
-	coincidePalabra(prueba, palab, coin1, Tabla);
-	printf("\nCoincidencia2\n\n");
-	coincidePalabra(prueba, palab, coin11, Tabla);
-	printf("\nCoincidencia3\n\n");
-	coincidePalabra(prueba, palab, coin12, Tabla);
-
-	MostrarElementosEnTabla(Tabla);
+	//MostrarElementosEnTabla(Tabla);
 
   pthread_mutex_unlock(&lock);
+	printf("SALIO DE LA FUNCION DE ALBERT \n");
 }
 
 int procesaEntrada(int argc, char **argv, char **dir, int *altura,
@@ -507,4 +448,134 @@ int comparaString(char *contenidoArgv, char *Acomparar){
     }
 
     return 1;
+}
+
+void shell(void* txt){
+  char* nombreTxt = (char*)txt;
+  pthread_mutex_lock(&lock);
+	printf("Entro en la funcion del Yisus\n");
+  //printf("NOMBRE DEL TXT %s \n",nombreTxt );
+
+  pthread_mutex_unlock(&lock);
+	printf("Salio de la funcion del Yisus\n");
+}
+
+int countlines(char *filename){
+    FILE *fp;
+    int count = 0;  // contador de lineas
+    char c;  // To store a character read from file
+
+    // Open the file
+    fp = fopen(filename, "r");
+
+    // chequea si el archivo existe
+    if (fp == NULL)
+    {
+        printf("Could not open file %s", filename);
+        return 0;
+    }
+
+    // Extract characters from file and store in character c
+    for (c = getc(fp); c != EOF; c = getc(fp)){
+        if (c == '\n'){
+            count = count + 1;
+        }
+    }
+    // Close the file
+    fclose(fp);
+    //printf("The file %s has %d lines\n ", filename, count);
+
+    return count;
+};
+
+int comparaString2(char *str1, char *str2){
+
+  int i = 0;
+  int len1 = strlen(str1) - 1;
+  int len2 = strlen(str2);
+
+  //printf("Dentro de la funcion comparar\n");
+  //printf("strlen(str1): %d\nstr1: %s\nstrlen(str2): %d\nstr2: %s\n", strlen(str1), str1, strlen(str2), str2);
+
+  if(len1 != len2)
+  {
+    return 0; //no son iguales
+  }
+
+	for(i = 0; i < len1; i++)
+	{
+    if(tolower(*(str1 + i)) != tolower(*(str2 + i)))
+      return 0; // no son iguales
+	}
+
+  return 1; // son iguales
+}
+
+void readd(int numLines, char *filename, TablaHash *Tabla){
+  int character, whitespace = 0;
+  char *line = NULL;
+  size_t len = 0;
+  ssize_t read;
+  char *token;
+  int contador = 0;
+  int numero = 0; // numero del producto
+  //TablaHash* Tabla;
+  char *ruta;
+  char *palabraArchivo;
+  char *clave;
+  char* abrir = "()";
+  char* Fin = "FinDelBloque";
+
+
+  FILE *file = fopen ( filename, "r" );
+
+  if (file == NULL){
+		exit(EXIT_FAILURE);
+  }
+
+	while ((read = getline(&line, &len, file)) != -1) {
+    token = strtok(line,"\t");
+    /* iteramos sobre los otros token */
+    while( token != NULL ) {
+
+      if (contador == 0) {
+        if (comparaString2(token,abrir)) {
+          //printf("ENTROOOOO\n");
+          contador = 0;
+          numero = numero + 1;
+          contador = contador + 1;
+        }
+      }
+      else if (contador == 1 ) {
+        clave = token;
+        contador = contador + 1;
+        //printf("CLAVE %s\n",clave);
+      }
+      else if (contador == 2) {
+        palabraArchivo = token;
+        contador = contador + 1;
+        //printf("archivo %s\n",palabraArchivo);
+      }
+      else if(contador > 2){
+        if(comparaString2(token,Fin) != 1) {
+          ruta = token;
+          //printf("RUTA %s\n",ruta);
+          // llamamos a la funcion de hash de Albert para pasarle los parametros
+          coincidePalabra(ruta, palabraArchivo, clave, Tabla);
+        }
+
+        else if(comparaString2(token,Fin)) {
+          contador = 0;
+        }
+      }
+      //printf("contador %d\n", contador );
+      //printf( "token %s\n", token ); //--------> Imprime y muestra que esta leyendo bien
+      token = strtok(NULL,"\t");
+      //contador++;
+    }
+  }
+	free(line);
+	fclose(file);
+	//exit(EXIT_SUCCESS);
+
 }

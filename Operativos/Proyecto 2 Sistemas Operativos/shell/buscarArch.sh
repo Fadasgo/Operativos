@@ -43,10 +43,11 @@ if [ -f $archIndx ] #aqui se encarga de revisar si es directorio
 then
     IFS='/' read -ra ADDR <<< "$Buscada_Dir"
     len=${#ADDR[@]}
-    echo "${ADDR[$len - 1]}" >> "$archIndx"
-
+    echo -e "()" >> "$archIndx"
     echo "$1" >> "$archIndx"
+    echo "${ADDR[$len - 1]}" >> "$archIndx"
     echo "$Buscada_Dir" >> "$archIndx"
+    echo "FinDelBloque" >> "$archIndx"
 
 else
     echo "Se creara un archivo indice, $archIndx"

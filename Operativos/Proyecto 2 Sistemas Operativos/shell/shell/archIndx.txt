@@ -1,0 +1,6 @@
+()
+Tarea
+Tarea
+/home/jcellomarcano/Escritorio/Operativos/Operativos/Tarea
+/home/jcellomarcano/Operativos/Operativos/Tarea
+FinDelBloque

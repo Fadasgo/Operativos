@@ -43,6 +43,13 @@ typedef struct datos_{
 
 }datos;
 
+typedef struct shellConsola_{
+
+	char* txtName[25];
+	char* argumento[50];
+
+}consola;
+
 pthread_mutex_t lock;
 
 /* Prototipos de funciones */
@@ -78,11 +85,10 @@ void coincidePalabra(char *ruta, char *palabra, char *clave, TablaHash *Tabla);
 
 /* Funcion main */
 // Yeeeeeiiii
-//int main(int argc, char **argv){
-int main(){
-/*
+int main(int argc, char **argv){
+
 	// Procesado de Entrada
-	int altura = 20;
+	/*int altura = 20;
   int noadd = 0;
   int noupdate = 0;
 	char *indice = NULL;
@@ -97,21 +103,18 @@ int main(){
         printf("¡ERROR!\nLos parametros de entrada no son los correctos\nEl programa se cerrara.\n");
         return 0;
     }
-
-    printf("Altura: %d\n", altura);
-    printf("Direccion: %s\n", dir);
-    printf("indice: %s\n", indice);
-    printf("noupdate: %d\n", noupdate);
-    printf("noadd: %d\n", noadd);
-    printf("palabraClave: %s\n", palabraClave);
-
-    printf("Todo correcto\n");
 	}*/
 
 	char* txt = "archIndx.txt"; // parametro por defecto a menos que se cambie por flag
   int h1;
 	int h2;
 	TablaHash *Tabla = CrearTabla();
+
+	consola* con = malloc(sizeof(consola));
+	strcpy(con->argumento,argv[1]);
+	//printf("ARGUMENTO  %s\n",con->argumento);
+	strcpy(con->txtName,txt);
+	//printf("TXT NAME %s\n",con-> txtName );
 
 	datos* dat = malloc(sizeof(datos));
 	dat->tabla = Tabla;
@@ -120,7 +123,7 @@ int main(){
   pthread_t thread1;
 	pthread_t thread2;
 
-  h1 = pthread_create(&thread1,NULL,shell,(void *)txt); // 1er hilo para buscar los parametros
+  h1 = pthread_create(&thread1,NULL,shell,(void *)con); // 1er hilo para buscar los parametros
 	h2 = pthread_create(&thread2,NULL,pasoDeDatos,(void *)dat); // 2do hilo para cargarlos en la tabla de hash
 
   pthread_join(thread1, NULL);// 2do parametro es el return de la funcion
@@ -479,10 +482,34 @@ int comparaString(char *contenidoArgv, char *Acomparar){
 }
 
 void shell(void* txt){
-  char* nombreTxt = (char*)txt;
+	consola* dato = (consola *)txt;
+  char* nombreTxt;
+  char* argumento;
+
+  nombreTxt = dato->txtName;
+  argumento = dato->argumento;
+	printf("DATOOOOO%s\n",dato->argumento );// o seaesta linea pasa?
+
+  //char* nombreTxt = (char*)txt;
+	//Funciona? O sea, lo que mando el Albe;l
   pthread_mutex_lock(&lock);
 	printf("Entro en la funcion del Yisus\n");
   //printf("NOMBRE DEL TXT %s \n",nombreTxt );
+  //La variable si esta llegando hasta el print, pero no esta llegando al codigo de bash no se por que
+	char src[50];
+	char dest[50];
+	strcpy(src, "bash buscarArch.sh ");
+	strcpy(dest, dato->argumento);
+	printf("HOLAAAA %s\n",src );//Que sucede aqui??? esta retornando bien la variable
+
+	//printf("ARGUMENTO 2 \n", argumento);
+	//strcpy(dest,palabraClave);
+	strcat(src,dest);
+	printf("puestooooo : %s\n", src );
+	puts("Will execute sh with the following script :");
+	puts(src);
+	puts("Starting now:");
+	system(src);
 
   pthread_mutex_unlock(&lock);
 	printf("Salio de la funcion del Yisus\n");

@@ -1,0 +1,67 @@
+()
+Tarea
+Tarea
+/home/jcellomarcano/Escritorio/Operativos/Operativos/Tarea
+/home/jcellomarcano/Operativos/Operativos/Tarea
+FinDelBloque
+()
+Operativos
+
+
+FinDelBloque
+()
+Operativos
+
+
+FinDelBloque
+()
+Operativos
+
+
+FinDelBloque
+()
+Operativos
+
+
+FinDelBloque
+()
+Tarea
+Tarea_3_FS.txt
+/home/fadasgo/Escritorio/BWL/Tarea_3_FS.txt
+/home/fadasgo/Escritorio/BWL/Tarea_1_FS.txt
+/home/fadasgo/Escritorio/BWL/linksTarea4.txt
+/home/fadasgo/Escritorio/BWL/Tarea_2_FS.txt
+/home/fadasgo/Escritorio/BWL/Tarea1 LDC
+/home/fadasgo/Escritorio/BWL/Tarea_4 _FS.txt
+/home/fadasgo/Escritorio/GitHub/Operativos/Tarea/Enunciado Tarea.pdf
+/home/fadasgo/Escritorio/Operativos/Tarea/Enunciado Tarea.pdf
+/home/fadasgo/Escritorio/Operativos/Tarea1-1210578-1110278.tar.gz
+/home/fadasgo/Escritorio/Operativos (2)/Tarea/Tarea2016.pdf
+/home/fadasgo/Escritorio/Operativos (2)/tarea/Código/Tarea-1311264.tar.gz
+FinDelBloque
+()
+Operativos
+Unix- Operativos I
+/home/fadasgo/Escritorio/Unix- Operativos I
+/home/fadasgo/Escritorio/GitHub/Operativos
+/home/fadasgo/Escritorio/GitHub/Operativos/Proyecto 2 Sistemas Operativos
+/home/fadasgo/Escritorio/Operativos
+/home/fadasgo/Escritorio/Proyecto 2 Sistemas Operativos
+/home/fadasgo/Escritorio/Operativos (2)
+FinDelBloque
+()
+Operativos
+Unix- Operativos I
+/home/fadasgo/Escritorio/Unix- Operativos I
+/home/fadasgo/Escritorio/GitHub/Operativos
+/home/fadasgo/Escritorio/GitHub/Operativos/Proyecto 2 Sistemas Operativos
+/home/fadasgo/Escritorio/Operativos
+/home/fadasgo/Escritorio/Proyecto 2 Sistemas Operativos
+/home/fadasgo/Escritorio/Operativos (2)
+FinDelBloque
+()
+Operativos
+Fundamentos de Sistemas Operativos - 7ma Edicion - Abraham Silberschatz, Peter Baer Galvin & Greg Gagne.pdf
+/home/fadasgo/Escritorio/Unix- Operativos I/Fundamentos de Sistemas Operativos - 7ma Edicion - Abraham Silberschatz, Peter Baer Galvin & Greg Gagne.pdf
+/home/fadasgo/Escritorio/Operativos.zip
+FinDelBloque

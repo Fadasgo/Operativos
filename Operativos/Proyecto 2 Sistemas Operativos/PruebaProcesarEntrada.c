@@ -10,7 +10,7 @@
 
 /* Prototipos de funciones */
 
-int procesaEntrada(int argc, char **argv, char **dir, int *altura, 
+int procesaEntrada(int argc, char **argv, char **dir, int *altura,
                 char **indice, int *noupdate, int *noadd, char **palabraClave);
 
 int comparaString(char *contenidoArgv, char *Acomparar);
@@ -19,17 +19,17 @@ int main(int argc, char **argv){
 
 	/* Variables */
 	int altura = 20;
-    int noadd = 0;
-    int noupdate = 0;
+  int noadd = 0;
+  int noupdate = 0;
 	char *indice = NULL;
 	char *dir = NULL;
-    char *palabraClave = NULL;
+  char *palabraClave = NULL;
 
-	int opcion = procesaEntrada(argc, argv, &dir, &altura, &indice, 
+	int opcion = procesaEntrada(argc, argv, &dir, &altura, &indice,
                                 &noupdate, &noadd, &palabraClave);
 
-	if(opcion < 0)                                                
-    {                                                
+	if(opcion < 0)
+    {
         printf("¡ERROR!\nLos parametros de entrada no son los correctos\nEl programa se cerrara.\n");
         return 0;
     }
@@ -44,7 +44,7 @@ int main(int argc, char **argv){
     printf("Todo correcto\n");
 }
 
-int procesaEntrada(int argc, char **argv, char **dir, int *altura, 
+int procesaEntrada(int argc, char **argv, char **dir, int *altura,
                 char **indice, int *noupdate, int *noadd,char **palabraClave){
 
 	int opcion = 0;      // valor a retornar
